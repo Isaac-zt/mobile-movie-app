@@ -12,11 +12,11 @@ export default function RootLayout() {
       name="(tabs)"
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
-      name="movie/[id]"
+   <Stack.Screen
+      name="movies/[id]"
       options={{ headerShown: false }}
-    />
-  </Stack>;
+    />  
+  </Stack>
   </>
   );
 }
