@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { icons } from "@/constants/icons";
 import { fetchMovieDetails } from "@/services/api";
 import useFetch from "@/services/useFetch";
+import { useFavourites } from "@/context/FavouritesContext";
 
 interface MovieInfoProps {
   label: string;
@@ -30,10 +31,23 @@ const MovieInfo = ({ label, value }: MovieInfoProps) => (
 const Details = () => {
   const router = useRouter();
   const { id } = useLocalSearchParams();
+  const { savedMovieIds, toggleSave } = useFavourites();
 
   const { data: movie, loading } = useFetch(() =>
     fetchMovieDetails(id as string),
   );
+
+  const isSaved = movie ? savedMovieIds.has(movie.id) : false;
+  const handleSavePress = () => {
+    if (movie)
+      toggleSave({
+        id: movie.id,
+        title: movie.title,
+        poster_path: movie.poster_path ?? "",
+        vote_average: movie.vote_average ?? 0,
+        release_date: movie.release_date ?? "",
+      });
+  };
 
   if (loading)
     return (
@@ -59,6 +73,17 @@ const Details = () => {
               source={icons.play}
               className="w-6 h-7 ml-1"
               resizeMode="stretch"
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleSavePress}
+            className="absolute top-4 right-4 size-12 rounded-full bg-black/50 flex items-center justify-center z-10"
+          >
+            <Image
+              source={icons.save}
+              className="size-6"
+              tintColor={isSaved ? "#E50914" : "#fff"}
             />
           </TouchableOpacity>
         </View>

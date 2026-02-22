@@ -11,9 +11,11 @@ import type { Movie } from "@/types/index";
 
 import MovieDisplayCard from "@/components/MovieCard";
 import SearchBar from "@/components/SearchBar";
+import { useFavourites } from "@/context/FavouritesContext";
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { savedMovieIds, toggleSave } = useFavourites();
 
   const {
     data: movies = [],
@@ -57,7 +59,13 @@ const Search = () => {
         className="px-5"
         data={movies as Movie[]}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <MovieDisplayCard {...item} />}
+        renderItem={({ item }) => (
+          <MovieDisplayCard
+            {...item}
+            isSaved={savedMovieIds.has(item.id)}
+            onSavePress={() => toggleSave(item)}
+          />
+        )}
         numColumns={3}
         columnWrapperStyle={{
           justifyContent: "flex-start",

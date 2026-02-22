@@ -18,9 +18,11 @@ import { images } from "@/constants/images";
 import SearchBar from "@/components/SearchBar";
 import MovieCard from "@/components/MovieCard";
 import TrendingCard from "@/components/TrendingCard";
+import { useFavourites } from "@/context/FavouritesContext";
 
 const Index = () => {
   const router = useRouter();
+  const { savedMovieIds, toggleSave } = useFavourites();
 
   const {
     data: trendingMovies,
@@ -95,7 +97,13 @@ const Index = () => {
 
               <FlatList
                 data={movies}
-                renderItem={({ item }) => <MovieCard {...item} />}
+                renderItem={({ item }) => (
+                  <MovieCard
+                    {...item}
+                    isSaved={savedMovieIds.has(item.id)}
+                    onSavePress={() => toggleSave(item)}
+                  />
+                )}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={3}
                 columnWrapperStyle={{
